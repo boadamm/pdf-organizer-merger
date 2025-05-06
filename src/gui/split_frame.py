@@ -222,20 +222,36 @@ class SplitFrame(ttk.Frame):
             return
         
         # Get parent application to update status
-        app = self.parent.master
-        app.set_status("Splitting PDF...")
+        try:
+            app = self.parent.master
+            app.set_status("Splitting PDF...")
+        except AttributeError:
+            # If that fails, just continue without status updates
+            pass
         
         try:
             result = PDFSplitter.split_pdf(input_path, output_path, page_ranges)
             
             if result:
-                app.set_status("PDF split successfully.")
+                try:
+                    app.set_status("PDF split successfully.")
+                except (AttributeError, NameError):
+                    pass
                 messagebox.showinfo("Success", f"PDF split successfully to:\n{output_path}")
             else:
-                app.set_status("Failed to split PDF.")
+                try:
+                    app.set_status("Failed to split PDF.")
+                except (AttributeError, NameError):
+                    pass
                 messagebox.showerror("Error", "Failed to split PDF. Check the console for details.")
         except Exception as e:
-            app.set_status("Error splitting PDF.")
+            try:
+                app.set_status("Error splitting PDF.")
+            except (AttributeError, NameError):
+                pass
             messagebox.showerror("Error", f"An error occurred while splitting PDF:\n{str(e)}")
         
-        app.set_status("Ready") 
+        try:
+            app.set_status("Ready")
+        except (AttributeError, NameError):
+            pass 

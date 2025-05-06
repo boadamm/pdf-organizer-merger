@@ -199,8 +199,12 @@ class TextFrame(ttk.Frame):
             return
         
         # Get parent application to update status
-        app = self.parent.master
-        app.set_status("Extracting text...")
+        try:
+            app = self.parent.master
+            app.set_status("Extracting text...")
+        except AttributeError:
+            # If that fails, just continue without status updates
+            pass
         
         try:
             # Clear the text area
@@ -221,12 +225,21 @@ class TextFrame(ttk.Frame):
                     self.text_area.insert(tk.END, text_dict[page_num])
                     self.text_area.insert(tk.END, "\n\n")
             
-            app.set_status("Text extracted successfully.")
+            try:
+                app.set_status("Text extracted successfully.")
+            except (AttributeError, NameError):
+                pass
         except Exception as e:
-            app.set_status("Error extracting text.")
+            try:
+                app.set_status("Error extracting text.")
+            except (AttributeError, NameError):
+                pass
             messagebox.showerror("Error", f"An error occurred while extracting text:\n{str(e)}")
         
-        app.set_status("Ready")
+        try:
+            app.set_status("Ready")
+        except (AttributeError, NameError):
+            pass
     
     def _save_text(self):
         """Save the extracted text to a file."""

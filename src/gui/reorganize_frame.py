@@ -174,8 +174,12 @@ class ReorganizeFrame(ttk.Frame):
             return
         
         # Get parent application to update status
-        app = self.parent.master
-        app.set_status("Loading PDF pages...")
+        try:
+            app = self.parent.master
+            app.set_status("Loading PDF pages...")
+        except AttributeError:
+            # If that fails, just continue without status updates
+            pass
         
         try:
             # Clear existing thumbnails
@@ -193,12 +197,21 @@ class ReorganizeFrame(ttk.Frame):
             # Display thumbnails
             self._display_thumbnails()
             
-            app.set_status("PDF pages loaded successfully.")
+            try:
+                app.set_status("PDF pages loaded successfully.")
+            except (AttributeError, NameError):
+                pass
         except Exception as e:
-            app.set_status("Error loading PDF pages.")
+            try:
+                app.set_status("Error loading PDF pages.")
+            except (AttributeError, NameError):
+                pass
             messagebox.showerror("Error", f"An error occurred while loading PDF pages:\n{str(e)}")
         
-        app.set_status("Ready")
+        try:
+            app.set_status("Ready")
+        except (AttributeError, NameError):
+            pass
     
     def _display_thumbnails(self):
         """Display the thumbnails in the current order."""
@@ -312,20 +325,36 @@ class ReorganizeFrame(ttk.Frame):
             return
         
         # Get parent application to update status
-        app = self.parent.master
-        app.set_status("Saving reorganized PDF...")
+        try:
+            app = self.parent.master
+            app.set_status("Saving reorganized PDF...")
+        except AttributeError:
+            # If that fails, just continue without status updates
+            pass
         
         try:
             result = PageReorganizer.reorganize_pages(input_path, output_path, self.current_order)
             
             if result:
-                app.set_status("PDF saved successfully.")
+                try:
+                    app.set_status("PDF saved successfully.")
+                except (AttributeError, NameError):
+                    pass
                 messagebox.showinfo("Success", f"Reorganized PDF saved successfully to:\n{output_path}")
             else:
-                app.set_status("Failed to save PDF.")
+                try:
+                    app.set_status("Failed to save PDF.")
+                except (AttributeError, NameError):
+                    pass
                 messagebox.showerror("Error", "Failed to save reorganized PDF. Check the console for details.")
         except Exception as e:
-            app.set_status("Error saving PDF.")
+            try:
+                app.set_status("Error saving PDF.")
+            except (AttributeError, NameError):
+                pass
             messagebox.showerror("Error", f"An error occurred while saving the PDF:\n{str(e)}")
         
-        app.set_status("Ready") 
+        try:
+            app.set_status("Ready")
+        except (AttributeError, NameError):
+            pass 

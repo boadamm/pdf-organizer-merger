@@ -279,8 +279,12 @@ class SecurityFrame(ttk.Frame):
         owner_password = self.owner_password_var.get()
         
         # Get parent application to update status
-        app = self.parent.master
-        app.set_status("Encrypting PDF...")
+        try:
+            app = self.parent.master
+            app.set_status("Encrypting PDF...")
+        except AttributeError:
+            # If that fails, just continue without status updates
+            pass
         
         try:
             result = PDFSecurity.encrypt_pdf(
@@ -291,16 +295,28 @@ class SecurityFrame(ttk.Frame):
             )
             
             if result:
-                app.set_status("PDF encrypted successfully.")
+                try:
+                    app.set_status("PDF encrypted successfully.")
+                except (AttributeError, NameError):
+                    pass
                 messagebox.showinfo("Success", f"PDF encrypted successfully to:\n{output_path}")
             else:
-                app.set_status("Failed to encrypt PDF.")
+                try:
+                    app.set_status("Failed to encrypt PDF.")
+                except (AttributeError, NameError):
+                    pass
                 messagebox.showerror("Error", "Failed to encrypt PDF. Check the console for details.")
         except Exception as e:
-            app.set_status("Error encrypting PDF.")
+            try:
+                app.set_status("Error encrypting PDF.")
+            except (AttributeError, NameError):
+                pass
             messagebox.showerror("Error", f"An error occurred while encrypting PDF:\n{str(e)}")
         
-        app.set_status("Ready")
+        try:
+            app.set_status("Ready")
+        except (AttributeError, NameError):
+            pass
     
     def _decrypt_pdf(self):
         """Decrypt the selected PDF."""
@@ -320,20 +336,36 @@ class SecurityFrame(ttk.Frame):
             return
         
         # Get parent application to update status
-        app = self.parent.master
-        app.set_status("Decrypting PDF...")
+        try:
+            app = self.parent.master
+            app.set_status("Decrypting PDF...")
+        except AttributeError:
+            # If that fails, just continue without status updates
+            pass
         
         try:
             result = PDFSecurity.decrypt_pdf(input_path, output_path, password)
             
             if result:
-                app.set_status("PDF decrypted successfully.")
+                try:
+                    app.set_status("PDF decrypted successfully.")
+                except (AttributeError, NameError):
+                    pass
                 messagebox.showinfo("Success", f"PDF decrypted successfully to:\n{output_path}")
             else:
-                app.set_status("Failed to decrypt PDF.")
+                try:
+                    app.set_status("Failed to decrypt PDF.")
+                except (AttributeError, NameError):
+                    pass
                 messagebox.showerror("Error", "Failed to decrypt PDF. Check the console for details.")
         except Exception as e:
-            app.set_status("Error decrypting PDF.")
+            try:
+                app.set_status("Error decrypting PDF.")
+            except (AttributeError, NameError):
+                pass
             messagebox.showerror("Error", f"An error occurred while decrypting PDF:\n{str(e)}")
         
-        app.set_status("Ready") 
+        try:
+            app.set_status("Ready")
+        except (AttributeError, NameError):
+            pass 
